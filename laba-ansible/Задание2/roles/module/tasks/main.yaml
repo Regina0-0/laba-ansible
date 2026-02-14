@@ -1,0 +1,26 @@
+---
+- name: Upgrade system packages
+  ansible.builtin.apt:
+    name: "*"
+    update_cache: true
+    state: latest
+
+- name: Deploy nginx web server
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+
+- name: Transfer nginx configuration file
+  ansible.builtin.copy:
+    src: nginx-web.conf
+    dest: /tmp/nginx-test/nginx-web.conf
+
+- name: Launch nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+
+- name: Configure nginx listen port
+  nginx_port:
+    port: "{{ nginx_port }}"
+    config_path: "{{ nginx_config_path }}"
